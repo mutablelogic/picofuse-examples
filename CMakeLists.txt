@@ -1,3 +1,4 @@
+
 cmake_minimum_required(VERSION 3.27)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 17)
@@ -5,11 +6,16 @@ set(CMAKE_CXX_STANDARD 17)
 # Define the project
 project(picofuse-examples LANGUAGES OBJC C)
 
-# Allow manual override: -D PICOFUSE_PKG=picofuse-darwin-arm64
-if(NOT PICOFUSE_PKG)
-  string(TOLOWER "${CMAKE_SYSTEM_NAME}" _os)
-  string(TOLOWER "${CMAKE_SYSTEM_PROCESSOR}" _arch)
-  set(PICOFUSE_PKG "picofuse-${_os}-${_arch}")
+# If PICO_BOARD is set, override system name and package
+if(DEFINED PICO_BOARD)
+  set(CMAKE_SYSTEM_NAME "Pico")
+  set(PICOFUSE_PKG "picofuse-pico-${PICO_BOARD}")
+  # Set linker output format to .elf
+  set(CMAKE_LINK_EXECUTABLE_SUFFIX ".elf")
+else()
+    string(TOLOWER "${CMAKE_SYSTEM_NAME}" _os)
+    string(TOLOWER "${CMAKE_SYSTEM_PROCESSOR}" _arch)
+    set(PICOFUSE_PKG "picofuse-${_os}-${_arch}")
 endif()
 
 # pkgconfig
